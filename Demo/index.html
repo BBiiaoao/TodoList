@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搞事情</title>
+    <link rel="stylesheet" href="lib/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div id="main">
+    <div class="navbar">
+        <h1>蛇皮清单</h1>
+    </div>
+    <div class="header">
+        游戏打完了么？就写作业?
+    </div>
+    <form @submit.prevent="merge" id="task-form">
+        <div class="wrap">
+            <input v-model="current.title" id="task-input" type="text" autocomplete="off">
+            <div v-if="current.id" class="detail">
+                <textarea v-model="current.desc"></textarea>
+                <input v-model="current.alert_at" type="datetime-local">
+                <button type="submit">submit</button>
+            </div>
+        </div>
+    </form>
+    <div class="task-list">
+        <div class="wrap">
+            <div style="font-weight: bold">
+                未完成
+            </div>
+            <task :todo="todo"
+                  v-if="!todo.completed"
+                  v-for="(todo,index) in list" >
+            </task>
+        </div>
+    </div>
+    <div class="task-form">
+        <div class="wrap">
+            <div style="font-weight: bold">
+                已完成
+            </div>
+            <div v-if="todo.completed" v-for="(todo,index) in list" class="item complete">
+                <div class="Icon">
+                    <svg class="icon" @click="toggle_complete(todo.id)" aria-hidden="true">
+                        <use xlink:href="#icon-check-circle-z-copy"></use>
+                    </svg>
+                </div>
+                {{todo.title}}
+                <button @click="remove(todo.id)">删除</button>
+                <button @click="set_current(todo)">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<audio src="sound/notice.mp3" id="alert-sound"></audio>
+<template id="task-tpl">
+    <div class="item">
+        <div class="Icon">
+            <svg class="icon" @click="action('toggle_complete',todo.id)" aria-hidden="true">
+                <use xlink:href="#icon-check-circle-copy"></use>
+            </svg>
+        </div>
+        {{todo.title}}
+        <button @click="action('remove',todo.id)">删除</button>
+        <button @click="action('set_current',todo)">更新</button>
+        <button @click="action('toggle_detail',todo.id)">详情</button>
+        <div v-if="todo.show_detail" class="detail">
+            {{todo.desc || '暂无详情'}}
+        </div>
+    </div>
+</template>
+
+
+<script src="lib/vue.js"></script>
+<script src="js/myStorage.js"></script>
+<script src="js/main.js"></script>
+<script src="//at.alicdn.com/t/font_738770_as8rue20v8l.js"></script>
+</body>
+</html>
